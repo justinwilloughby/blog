@@ -1,0 +1,33 @@
+---
+title: 'Building An Auth Server With Next.js'
+publishedAt: '2024-06-25'
+summary: ''
+---
+
+I’ve worked in the identity space for 6 years now. A large portion of that time was spent deploying centralized identity platforms at customers for external user communities. Microsoft’s offering is called Azure AD B2C, and I’ve mastered the deployment and customization of this service over the years. I’ve always been curious what goes into making a platform like this, so I decided to build one myself.
+
+When I sat down to get started, my impulse was to treat the auth server like a faceless REST API with an authorize and token endpoint that applications could hit to authenticate and authorize their users. For some auth flows, like the machine-to-machine client credentials flow, that mental framework makes sense, but for web applications that require user interaction, I quickly realized that my original thinking was flawed. An auth server is responsible for collecting the users’s credentials, validating them, directing to a third-party login, and ultimately returning a code or token back to the application. In light of that, thinking about the auth server as a web application itself helped me get a better grasp on what I needed to build and how.
+
+I’ve been building my Next.js skills for the last several months so it was an easy choice to use for this project. There might be other languages or frameworks that are better suited for the task, but continuing to strengthen my Next.js skills is more important to me.
+
+The first thing I needed to do was brush up on the different OAuth and OIDC flows. What are the all the expected inputs, outputs, and errors? https://www.oauth.com/ does a fantastic job of walking through everything.
+
+Then I created a fresh project with create-next-app and started building.
+
+After so many years being the consumer of identity services, I found it hard at times thinking as the platform instead of the consumer. When I call the login function, that’s not me initiating the auth_code flow, the flow has already been initiated by the consumer, now I’m on the auth server validating the username and password provided to me. It was a surreal experience being on this side of things.
+
+There’s a lot that goes into building an auth server, so like any task that seems too big, I broke it into smaller components and decided to just start by building one flow and I picked the auth_code flow (without PKCE just yet) because it’s one that I see the most. I created an authorize page that is a server component, with an embedded client form component to collect the username and password. The login button is a server action. The top level server component is responsible for parsing the query string params and returning errors when necessary. The client form component is responsible for collecting the username and password and then using the server action to post the login. I don’t have a database setup for this project yet, so the login server action just validates against a local in-memory object. After all the validations are passed, the authorize endpoint redirects back to the redirect_uri with a code to be used against the token endpoint.
+
+The token endpoint was created as a route instead of a page because right now it doesn’t require any user interaction. It’s a form POST that takes in the required parameters, validates them against the local in-memory object, and then returns a token.
+
+To help test this, in the same project, I created a sudo application and api. The /application page provides a login button that redirects to the authorize endpoint with the proper parameters. The /api/users endpoint accepts a GET request, parses and validates the bearer token and then returns a list of sample users. The /callback page is the redirect_uri of the login redirect, and once the code is returned, there are buttons to go get the token and call the API.
+
+I learned a lot while building this project and I intend to keep going. There are several more flows to implement. I need to integrate a proper database for users and app registrations. It needs session, and token management capabilities. Sign up and password reset capabilities. Third-party login support. Beautiful UI. SDKs. Bring your own domain. And the list goes on.
+
+I’ve grown to appreciate identity platforms even more. Clerk for Next.js can provide you all these features and more and setup will take you less then 10 minutes.
+
+All the code is available here: <a href="https://github.com/justinwilloughby/nextjs-auth-server">https://github.com/justinwilloughby/nextjs-auth-server</a>
+
+I’m hungry to learn more, and I look forward to continuing this project. Thanks for reading. Until next time.
+
+Justin
