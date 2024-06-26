@@ -1,0 +1,29 @@
+---
+title: 'Clerk Notes 06/25/2024'
+publishedAt: '2024-06-25'
+summary: ''
+---
+
+I've been exploring Clerk for Next.js authentication and user management and I've been very impressed.
+
+Here are some notes I've taken while working with Clerk.
+
+## Core 1 vs Core 2
+
+I created my Clerk account and my first application right before Core 2 was generally released. When I started reading the docs to setup passkeys I wasn't getting the expected behavior until I switched my application to use Core 2. The docs defaulted to Core 2 features and I didn't realize it. The key takeaway is to know what version of Clerk you're using make sure you're using the appropriate docs :)
+
+## Account Portal vs Prebuilt Components vs Custom Flows
+
+Out of the box Clerk is setup to use their Account Portal for the user interface. When a sign in or sign up happens, the app redirects to a Clerk hosted page. It's super easy to use and setup and should work for many greenfield projects. If you need further customization, they also expose custome components that you can import directly into your React project and render them. There won't be a redirect, it renders in your app natively and uses the Clerk API to perform the actions you need. The big benefit of the prebuilt components in my opinion is more control over the UI. You can control the layout and style of the components with props. You can also use tailwind which is nice. I found the setup for the prebuilt components to be pretty easy. The docs had a clear step by step for setting it up. If you need to customize the UI even more you can use the Clerk API directly but it's a lot more involved. Again the docs are great though.
+
+## Passkeys
+
+Can only be added on the profile page after sign up. Using the passkey on login was an awesome experience though. You can configure it to prompt for the passkey before you even enter your email so it was fast and efficient.
+
+## Social Connections
+
+Two things I loved. 1) The development setup for a social connection doesn't require you to supply your own client id and secret. 2) The docs for setting up each social connection were linked right on the dashboard.
+
+## Conclusion
+
+I'm really impressed with Clerk. I think it's a great solution for many projects. There are still many things on the platform I want to explore so expect more of these.
